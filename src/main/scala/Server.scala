@@ -1,4 +1,3 @@
-import SocketProcessor.pool
 import Util.*
 
 import java.io.*
@@ -16,30 +15,29 @@ import scala.util.{Try, Using}
 
 abstract class AbstractHttpServer(val port: Int, val host: String):
 
+  log("<~~ server started ~~>")
+
   given mapping: mutable.Map[String, Class[_]] = mutable.Map()
+  private val pool = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors())
 
   def registerPaths(): Unit
 
-  def serve(): Unit =
-    log("<~~ server started ~~>")
-    Using(ServerSocket(port))(serverSocket => while true do SocketProcessor(serverSocket.accept).process())
+  def serve(): Unit = Using(ServerSocket(port))(serverSocket => while true do pool.submit(SocketProcessor(serverSocket.accept)))
 
   @targetName("Register path and its' handler")
   def ++(pathHandlerPair: (String, Class[_])): Unit = mapping += (pathHandlerPair._1 -> pathHandlerPair._2)
 
-class SocketProcessor(val socket: Socket)(using mapping: mutable.Map[String, Class[_]]):
+class SocketProcessor(val socket: Socket)(using mapping: mutable.Map[String, Class[_]]) extends Runnable:
 
-  given conn: Socket = socket
+  override def run(): Unit = process()
 
   def process(): Unit =
 
-    val writer = BufferedOutputStream(conn.getOutputStream)
+    val writer = BufferedOutputStream(socket.getOutputStream)
     val httpResponse = HttpResponse(writer, socket)
 
-    val reader = BufferedInputStream(conn.getInputStream)
+    val reader = BufferedInputStream(socket.getInputStream)
     val httpRequest = HttpRequest(reader, socket)
-
-    reader.mark(0)
 
     val requestMethod = mutable.StringBuilder()
     var reqMethodChar = reader.read
@@ -55,13 +53,11 @@ class SocketProcessor(val socket: Socket)(using mapping: mutable.Map[String, Cla
       path.append(pathChar.asInstanceOf[Char])
       pathChar = reader.read()
 
-    reader.reset()
+    val handler = mapping(path.toString).getConstructor(classOf[HttpRequest], classOf[HttpResponse])
+      .newInstance(httpRequest, httpResponse)
+      .asInstanceOf[RequestHandler]
 
-    val handler = mapping(path.toString).getConstructor(classOf[HttpRequest], classOf[HttpResponse]).newInstance(httpRequest, httpResponse).asInstanceOf[RequestHandler]
-    pool.submit(handler)
-
-object SocketProcessor:
-  private val pool: ExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors())
+    handler.handle()
 
 
 case class HttpRequest(reader: BufferedInputStream, socket: Socket)

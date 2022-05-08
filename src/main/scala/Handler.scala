@@ -9,8 +9,8 @@ trait RequestHandler extends Runnable:
 
 abstract class HttpRequestHandler protected(val request: HttpRequest, val response: HttpResponse) extends RequestHandler:
 
-  log(s"handling /${this.getClass.getSimpleName.toLowerCase}")
-  
+  log(s"handling request for ${getClass.getSimpleName.toLowerCase}")
+
   def handle(): Unit
 
   protected def buildHeaderByData(data: Array[Byte]): Array[Byte] =
