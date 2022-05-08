@@ -1,4 +1,7 @@
-import Util.*
+package http
+
+import util.Util.log
+import socket.*
 
 import java.io.*
 import java.net.{ServerSocket, Socket}

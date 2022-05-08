@@ -1,3 +1,5 @@
+package request
+
 import java.io.{BufferedInputStream, BufferedOutputStream}
 import java.net.Socket
 import java.nio.charset.Charset

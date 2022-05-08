@@ -1,3 +1,7 @@
+package socket
+
+import request.{HttpRequest, HttpResponse, RequestHandler}
+
 import java.io.{BufferedInputStream, BufferedOutputStream}
 import java.net.Socket
 import scala.collection.mutable

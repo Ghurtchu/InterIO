@@ -1,3 +1,5 @@
+package util
+
 import scala.annotation.targetName
 import scala.util.Try
 

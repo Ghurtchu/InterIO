@@ -1,4 +1,7 @@
-import Util.log
+package request
+
+import request.{HttpRequest, HttpResponse}
+import util.Util.log
 
 import java.nio.charset.Charset
 import scala.util.Using

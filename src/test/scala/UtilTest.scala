@@ -1,4 +1,4 @@
-import Util._
+import util.Util._
 
 class UtilTest extends org.scalatest.funsuite.AnyFunSuite {
 

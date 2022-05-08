@@ -1,4 +1,8 @@
-import Util.{log, ~~>}
+package http
+
+import http.AbstractHttpServer
+import request.{HttpRequest, HttpRequestHandler, HttpResponse}
+import util.Util.{log, ~~>}
 
 class HttpServer(port: Int, host: String) extends AbstractHttpServer(port, host) :
 
@@ -11,7 +15,7 @@ class Root(val httpRequest: HttpRequest, val httpResponse: HttpResponse) extends
 
   override def handle(): Unit =
     log(s"handling /${this.getClass.getSimpleName.toLowerCase}")
-    val data: String = """<h1> Home page </h1>"""
+    val data: String = """<h1> http.Home page </h1>"""
     val header = buildHeader(data)("text/html")
     httpResponse.write(data)(header)
 
