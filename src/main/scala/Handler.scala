@@ -1,9 +1,10 @@
 import Util.log
 
 import java.nio.charset.Charset
+import scala.util.Using
 
 trait RequestHandler extends Runnable:
-  override def run(): Unit = handle()
+  final override def run(): Unit = handle()
 
   def handle(): Unit
 
@@ -11,10 +12,16 @@ abstract class HttpRequestHandler protected(val request: HttpRequest, val respon
 
   log(s"handling request for ${getClass.getSimpleName.toLowerCase}")
 
-  def handle(): Unit
+  final override def handle(): Unit =
+    handleRequest()
+    response.writer.flush()
+    request.socket.close()
 
-  protected def buildHeaderByData(data: Array[Byte]): Array[Byte] =
+  def handleRequest(): Unit
+
+  protected def buildHeader(data: String)(contentType: String): Array[Byte] =
+    val dataAsBytes = data.getBytes(Charset.forName("US-ASCII"))
     ("HTTP/1.1 200 OK\r\n"
       + "Server: deliverIO 2.0\r\n"
-      + "Content-length: " + data.length + "\r\n"
-      + "Content-type: " + "text/html" + "; charset=" + "UTF-8" + "\r\n\r\n").getBytes(Charset.forName("US-ASCII"))
+      + "Content-length: " + dataAsBytes.length + "\r\n"
+      + "Content-type: " + contentType + "; charset=" + "UTF-8" + "\r\n\r\n").getBytes(Charset.forName("US-ASCII"))

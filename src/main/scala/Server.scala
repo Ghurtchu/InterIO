@@ -24,7 +24,7 @@ abstract class AbstractHttpServer(val port: Int, val host: String):
 
   def serve(): Unit = Using(ServerSocket(port))(serverSocket => while true do pool.submit(SocketProcessor(serverSocket.accept)))
 
-  @targetName("Register path and its' handler")
+  @targetName("Register path and the handler class for the path")
   def ++(pathHandlerPair: (String, Class[_])): Unit = mapping += (pathHandlerPair._1 -> pathHandlerPair._2)
 
 class SocketProcessor(val socket: Socket)(using mapping: mutable.Map[String, Class[_]]) extends Runnable:
@@ -56,10 +56,18 @@ class SocketProcessor(val socket: Socket)(using mapping: mutable.Map[String, Cla
     val handler = mapping(path.toString).getConstructor(classOf[HttpRequest], classOf[HttpResponse])
       .newInstance(httpRequest, httpResponse)
       .asInstanceOf[RequestHandler]
-
+    
     handler.handle()
+    
 
 
-case class HttpRequest(reader: BufferedInputStream, socket: Socket)
-case class HttpResponse(writer: BufferedOutputStream, socket: Socket)
-
+case class HttpRequest(reader: BufferedInputStream, socket: Socket):
+  def read(): Unit = println()
+  
+case class HttpResponse(writer: BufferedOutputStream, socket: Socket):
+  
+  def write(data: Array[Byte]): Unit = writer.write(data)
+  
+  def write(data: String): Unit = write(data.getBytes(Charset.forName("US-ASCII")))
+   
+  
