@@ -29,20 +29,17 @@ class HttpServer(port: Int, host: String) extends AbstractHttpServer(port, host)
 
 class Root(val httpRequest: HttpRequest, val httpResponse: HttpResponse) extends HttpRequestHandler(httpRequest, httpResponse) :
 
-  override def handleRequest(): Unit =
+  override def handle(): Unit =
     log(s"handling /${this.getClass.getSimpleName.toLowerCase}")
-    val data: String = "<h1> Root response </h1>"
-    val header = buildHeader(data)("text/html")
-
-    httpResponse.write(header)
-    httpResponse.write(data)
+    val data: String = """{"name": "Nika", "age": 22}"""
+    val header = buildHeader(data)("application/json")
+    httpResponse.write(data)(header)
 
 class Home(val httpRequest: HttpRequest, val httpResponse: HttpResponse) extends HttpRequestHandler(httpRequest, httpResponse) :
 
-  override def handleRequest(): Unit =
+  override def handle(): Unit =
     log(s"handling /${this.getClass.getSimpleName.toLowerCase}")
-    val data: String = "<h1> Home response </h1>"
-    val header = buildHeader(data)("text/html")
+    val data: String = """{"name": "Anzor", "age": 23}"""
+    val header = buildHeader(data)("application/json")
+    httpResponse.write(data)(header)
 
-    httpResponse.write(header)
-    httpResponse.write(data)

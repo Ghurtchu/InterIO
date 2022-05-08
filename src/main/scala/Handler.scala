@@ -4,20 +4,20 @@ import java.nio.charset.Charset
 import scala.util.Using
 
 trait RequestHandler extends Runnable:
-  final override def run(): Unit = handle()
+  final override def run(): Unit = handleRequest()
 
-  def handle(): Unit
+  def handleRequest(): Unit
 
 abstract class HttpRequestHandler protected(val request: HttpRequest, val response: HttpResponse) extends RequestHandler:
 
   log(s"handling request for ${getClass.getSimpleName.toLowerCase}")
 
-  final override def handle(): Unit =
-    handleRequest()
+  final override def handleRequest(): Unit =
+    handle()
     response.writer.flush()
     request.socket.close()
 
-  def handleRequest(): Unit
+  def handle(): Unit
 
   protected def buildHeader(data: String)(contentType: String): Array[Byte] =
     val dataAsBytes = data.getBytes(Charset.forName("US-ASCII"))
