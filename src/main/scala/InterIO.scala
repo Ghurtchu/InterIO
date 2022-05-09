@@ -1,4 +1,4 @@
-import handler.{AboutHandler, HomeHandler, RootHandler}
+import handler.{AboutHandler, ScalaHandler, RootHandler}
 import http.AbstractHttpServer
 import util.Util.*
 import sun.net.httpserver.HttpServerImpl
@@ -23,5 +23,5 @@ class HttpServer(port: Int, host: String) extends AbstractHttpServer(port, host)
 
   final override def registerPaths(): Unit =
     ++("/" ~~> classOf[RootHandler])
-    ++("/home" ~~> classOf[HomeHandler])
+    ++("/scala" ~~> classOf[ScalaHandler])
     ++("/about" ~~> classOf[AboutHandler])
