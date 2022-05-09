@@ -1,33 +1,22 @@
 package request
 
+import socket.Connection
+
 import java.io.{BufferedInputStream, BufferedOutputStream}
 import java.net.Socket
 import java.nio.charset.Charset
 
-class HttpRequest(in: BufferedInputStream, connection: Socket):
+abstract class HttpOperation(val connection: Connection)
 
-  private lazy val reader = in
-  private lazy val socket = connection
+case class HttpRequest(in: BufferedInputStream, override val connection: Connection) extends HttpOperation(connection) :
 
-  def getWriter: BufferedInputStream = reader
+  def read(): Unit = println("unimplemented")
 
-  def getConnection: Socket = socket
+case class HttpResponse(out: BufferedOutputStream, override val connection: Connection) extends HttpOperation(connection) :
 
-  def read(): Unit = println()
-
-class HttpResponse(out: BufferedOutputStream, connection: Socket):
-
-  private lazy val writer = out
-  private lazy val socket = connection
-  
-  
-  def getWriter: BufferedOutputStream = writer
-  
-  def getConnection: Socket = socket
-  
   def write(data: Array[Byte])(header: Array[Byte]): Unit =
-    writer.write(header)
-    writer.write(data)
+    out.write(header)
+    out.write(data)
 
   def write(data: String)(header: Array[Byte]): Unit = write(data.getBytes(Charset.forName("US-ASCII")))(header)
 

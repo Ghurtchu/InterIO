@@ -3,20 +3,25 @@ package socket
 import request.{HttpRequest, HttpRequestHandler, HttpResponse, RequestHandler}
 import util.Util.log
 
-import java.io.{BufferedInputStream, BufferedOutputStream}
+import java.io.{BufferedInputStream, BufferedOutputStream, InputStream, OutputStream}
 import java.net.Socket
 import scala.collection.mutable
 import scala.util.Try
 
-class SocketProcessor(val socket: Socket)(using mapping: mutable.Map[String, Class[_]]) extends Runnable:
+class Connection(socket: Socket):
+  def close(): Unit = socket.close()
+  def in: InputStream = socket.getInputStream
+  def out: OutputStream = socket.getOutputStream
+
+class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String, Class[_]]) extends Runnable:
 
   override def run(): Unit =
 
-    val writer = BufferedOutputStream(socket.getOutputStream)
-    val httpResponse = HttpResponse(writer, socket)
+    val writer = BufferedOutputStream(connection.out)
+    val httpResponse = HttpResponse(writer, connection)
 
-    val reader = BufferedInputStream(socket.getInputStream)
-    val httpRequest = HttpRequest(reader, socket)
+    val reader = BufferedInputStream(connection.in)
+    val httpRequest = HttpRequest(reader, connection)
 
     val requestMethod = mutable.StringBuilder()
     var reqMethodChar = reader.read

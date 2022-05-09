@@ -3,6 +3,7 @@ package request
 import request.{HttpRequest, HttpResponse}
 import util.Util.log
 
+import java.net.Socket
 import java.nio.charset.Charset
 import scala.util.Using
 
@@ -17,8 +18,8 @@ abstract class HttpRequestHandler protected(val request: HttpRequest, val respon
 
   final override def handleRequest(): Unit =
     handle()
-    response.getWriter.flush()
-    request.getConnection.close()
+    response.out.flush()
+    request.connection.close()
 
   def handle(): Unit
 
