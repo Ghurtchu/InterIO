@@ -1,16 +1,16 @@
 package socket
 
-import request.{HttpRequest, HttpResponse, RequestHandler}
+import request.{HttpRequest, HttpRequestHandler, HttpResponse, RequestHandler}
+import util.Util.log
 
 import java.io.{BufferedInputStream, BufferedOutputStream}
 import java.net.Socket
 import scala.collection.mutable
+import scala.util.Try
 
 class SocketProcessor(val socket: Socket)(using mapping: mutable.Map[String, Class[_]]) extends Runnable:
 
-  override def run(): Unit = process()
-
-  def process(): Unit =
+  override def run(): Unit =
 
     val writer = BufferedOutputStream(socket.getOutputStream)
     val httpResponse = HttpResponse(writer, socket)
@@ -32,8 +32,7 @@ class SocketProcessor(val socket: Socket)(using mapping: mutable.Map[String, Cla
       path.append(pathChar.asInstanceOf[Char])
       pathChar = reader.read()
 
-    val handler = mapping(path.toString).getConstructor(classOf[HttpRequest], classOf[HttpResponse])
-      .newInstance(httpRequest, httpResponse)
-      .asInstanceOf[RequestHandler]
+    val instance = mapping.get(path.toString).fold(mapping("resourceNotFound"))(identity)
+    val handler = instance.getConstructor(classOf[HttpRequest], classOf[HttpResponse]).newInstance(httpRequest, httpResponse).asInstanceOf[RequestHandler]
 
     handler.handleRequest()

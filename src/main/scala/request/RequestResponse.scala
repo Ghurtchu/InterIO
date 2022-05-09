@@ -14,3 +14,5 @@ case class HttpResponse(writer: BufferedOutputStream, socket: Socket):
     writer.write(data)
 
   def write(data: String)(header: Array[Byte]): Unit = write(data.getBytes(Charset.forName("US-ASCII")))(header)
+
+  def write(data: Map[String, Matchable])(header: Array[Byte]): Unit = write(data.toString.getBytes(Charset.forName("US-ASCII")))(header)
