@@ -1,5 +1,5 @@
 # InterIO
-Goal: getting comfortable with low level Socket &amp; IO API on the JVM. interIO is a multithreaded http server written in Scala.
+Goal: getting comfortable with low level Socket &amp; IO API on the JVM. interIO is a multithreaded http server written in Scala, it follows so called "thread per request model".
 
 InterIO can be used as a lightweight server-side framework for serving http requests.
 
