@@ -4,11 +4,27 @@ import java.io.{BufferedInputStream, BufferedOutputStream}
 import java.net.Socket
 import java.nio.charset.Charset
 
-case class HttpRequest(reader: BufferedInputStream, socket: Socket):
+class HttpRequest(in: BufferedInputStream, connection: Socket):
+
+  private lazy val reader = in
+  private lazy val socket = connection
+
+  def getWriter: BufferedInputStream = reader
+
+  def getConnection: Socket = socket
+
   def read(): Unit = println()
 
-case class HttpResponse(writer: BufferedOutputStream, socket: Socket):
+class HttpResponse(out: BufferedOutputStream, connection: Socket):
 
+  private lazy val writer = out
+  private lazy val socket = connection
+  
+  
+  def getWriter: BufferedOutputStream = writer
+  
+  def getConnection: Socket = socket
+  
   def write(data: Array[Byte])(header: Array[Byte]): Unit =
     writer.write(header)
     writer.write(data)

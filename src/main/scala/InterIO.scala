@@ -1,4 +1,5 @@
-import http.HttpServer
+import handler.{AboutHandler, HomeHandler, RootHandler}
+import http.AbstractHttpServer
 import util.Util.*
 import sun.net.httpserver.HttpServerImpl
 
@@ -17,3 +18,13 @@ object InterIO:
     val server = HttpServer(port, host)
     server.serve()
 
+
+class HttpServer private(port: Int, host: String) extends AbstractHttpServer(port, host) :
+
+  override final def registerPaths(): Unit =
+    ++("/" ~~> classOf[RootHandler])
+    ++("/home" ~~> classOf[HomeHandler])
+    ++("/about" ~~> classOf[AboutHandler])
+
+object HttpServer:
+  def apply(port: Int, host: String): AbstractHttpServer = new HttpServer(port, host)
