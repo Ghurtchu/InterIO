@@ -27,6 +27,12 @@ Wanna play with it? Great! Here are some usage examples:
   > `LoginHandler` must extend HttpRequestHandler(httpRequest, httpResponse) in order to be functional.
   
   > `LoginHandler` must override method `handle()` in order to handle http request.
+  
+  > `LoginHandler` should be registered in the endpoints. Register `LoginHandler` in the method named as `registerPaths()` in HttpServer class
 
-**you may see the implementation mechanism in the following .scala files**:
+  > the path registering mechanism looks like the following ~> `++("/login", classOf[LoginHandler])`
+    
+    
+**you may see the implementation mechanism of method `handle()` in the following .scala files**:
   > `RootHandler.scala`, `ScalaHandler.scala`, `AboutHandler.scala`
+
