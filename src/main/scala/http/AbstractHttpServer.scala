@@ -37,7 +37,6 @@ abstract class AbstractHttpServer(val port: Int, val host: String):
 class ResourceNotFoundHandler(val httpRequest: HttpRequest, val httpResponse: HttpResponse) extends HttpRequestHandler(httpRequest, httpResponse) :
 
   final override def handle(): Unit =
-    log(s"handling /${this.getClass.getSimpleName.toLowerCase}")
     val data: String = """<h1> Page not found </h1>"""
     val header = buildHeader(data)("text/html")(404)
     httpResponse.write(data)(header)

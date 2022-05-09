@@ -7,19 +7,21 @@ import java.net.Socket
 import java.nio.charset.Charset
 import scala.util.Using
 
-trait RequestHandler extends Runnable:
+trait RequestHandler extends Runnable :
   final override def run(): Unit = handleRequest()
 
   def handleRequest(): Unit
 
-abstract class HttpRequestHandler protected(val request: HttpRequest, val response: HttpResponse) extends RequestHandler:
+abstract class HttpRequestHandler protected(val request: HttpRequest, val response: HttpResponse) extends RequestHandler :
 
-  log(s"handling request for ${getClass.getSimpleName.toLowerCase}")
+  lazy val requestHandler: String = getClass.getSimpleName
+  log(s"$requestHandler received HTTP request")
 
   final override def handleRequest(): Unit =
     handle()
     response.out.flush()
     request.connection.close()
+    log(s"$requestHandler sent back HTTP response")
 
   def handle(): Unit
 
