@@ -9,7 +9,9 @@ Wanna play with it? Great! Here are some usage examples:
 
 **start http server via terminal:** 
   > cd into `/InterIO` and start sbt by executing `sbt` in the shell:
+  
   > then execute the following: `run localhost 8080`
+  
   > open browser and hit `localhost:8080`.
 
 **start http server via IDE:**
@@ -20,5 +22,7 @@ Wanna play with it? Great! Here are some usage examples:
 **wanna add your own endpoint? that's more than easy:**
   
   > create the new class for handling the new endpoint. e.g create `LoginHandler` which would listen to `localhost:8080/login`
+  
   > `LoginHandler` must extend HttpRequestHandler(httpRequest, httpResponse) in order to be functional.
+  
   > `LoginHandler` must override method `handle()` in order to handle http request.
