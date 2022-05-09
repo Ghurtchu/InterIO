@@ -37,7 +37,9 @@ class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String,
       path.append(pathChar.asInstanceOf[Char])
       pathChar = reader.read()
 
-    val instance = mapping.get(path.toString).fold(mapping("resourceNotFound"))(identity)
-    val handler = instance.getConstructor(classOf[HttpRequest], classOf[HttpResponse]).newInstance(httpRequest, httpResponse).asInstanceOf[RequestHandler]
+    val handler = mapping.get(path.toString)
+      .fold(mapping("resourceNotFound"))(identity)
+      .getConstructor(classOf[HttpRequest], classOf[HttpResponse])
+      .newInstance(httpRequest, httpResponse).asInstanceOf[RequestHandler]
 
     handler.handleRequest()

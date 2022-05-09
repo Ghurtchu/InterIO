@@ -6,13 +6,12 @@ import java.io.{BufferedInputStream, BufferedOutputStream}
 import java.net.Socket
 import java.nio.charset.Charset
 
-abstract class HttpOperation(val connection: Connection)
+enum HttpOperation(val connection: Connection):
 
-case class HttpRequest(in: BufferedInputStream, override val connection: Connection) extends HttpOperation(connection) :
+  case HttpRequest(in: BufferedInputStream, override val connection: Connection)
+  case HttpResponse(out: BufferedOutputStream, override val connection: Connection)
 
   def read(): Unit = println("unimplemented")
-
-case class HttpResponse(out: BufferedOutputStream, override val connection: Connection) extends HttpOperation(connection) :
 
   def write(data: Array[Byte])(header: Array[Byte]): Unit =
     out.write(header)

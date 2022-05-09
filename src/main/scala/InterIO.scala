@@ -19,12 +19,9 @@ object InterIO:
     server.serve()
 
 
-class HttpServer private(port: Int, host: String) extends AbstractHttpServer(port, host) :
+class HttpServer(port: Int, host: String) extends AbstractHttpServer(port, host) :
 
-  override final def registerPaths(): Unit =
+  final override def registerPaths(): Unit =
     ++("/" ~~> classOf[RootHandler])
     ++("/home" ~~> classOf[HomeHandler])
     ++("/about" ~~> classOf[AboutHandler])
-
-object HttpServer:
-  def apply(port: Int, host: String): AbstractHttpServer = new HttpServer(port, host)
