@@ -13,22 +13,16 @@ class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String,
 
   final override def run(): Unit =
 
-    val writer = BufferedOutputStream(connection.output)
-    val reader = BufferedInputStream(connection.input)
+    val (writer, reader) = (BufferedOutputStream(connection.output), BufferedInputStream(connection.input))
+    val (requestMethod, path) = (extractParam(reader), extractParam(reader))
+    val (httpRequest, httpResponseWriter) = (HttpRequest(reader, requestMethod, connection), HttpResponseWriter(writer, connection))
 
-    val requestMethod = extractParam(reader)
-
-    val httpRequest = HttpRequest(reader, requestMethod, connection)
-    val httpResponse = HttpResponseWriter(writer, connection)
-
-    val path = extractParam(reader)
-
-    val handler = mapping.get(path)
+    val requestHandler = mapping.get(path)
       .fold(mapping("resourceNotFound"))(identity)
       .getConstructor(classOf[HttpRequest], classOf[HttpResponseWriter])
-      .newInstance(httpRequest, httpResponse).asInstanceOf[RequestHandler]
+      .newInstance(httpRequest, httpResponseWriter).asInstanceOf[RequestHandler]
 
-    handler.handleRequest()
+    requestHandler.handleRequest()
 
   private def extractParam(in: InputStream): String =
 
