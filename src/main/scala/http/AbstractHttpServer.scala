@@ -18,12 +18,15 @@ import scala.jdk.StreamConverters.*
 import scala.util.{Try, Using}
 import entity.StatusCode.*
 import entity.ContentType.*
+import entity.Body.*
+import SocketProcessor.NOT_FOUND
+
 
 abstract class AbstractHttpServer(val port: Int, val host: String):
 
   log("<~~ server started ~~>")
 
-  given pathToHandlerMapping: mutable.Map[String, Class[_]] = mutable.Map("resourceNotFound" -> classOf[ResourceNotFoundHandler])
+  given pathToHandlerMapping: mutable.Map[String, Class[_]] = mutable.Map(NOT_FOUND -> classOf[ResourceNotFoundHandler])
 
   private final val threadPool = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors())
 
@@ -39,8 +42,8 @@ abstract class AbstractHttpServer(val port: Int, val host: String):
 class ResourceNotFoundHandler(val httpRequest: HttpRequest, override val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
 
   final override def handle(): Unit =
-    val data: String = """<h1> Page not found </h1>"""
-    val response = HttpResponse(data, HTML, NotFound)
+    val body = html("""<h1> Page not found </h1>""")
+    val response = HttpResponse(body, NotFound)
     writer.write(response)
 
 

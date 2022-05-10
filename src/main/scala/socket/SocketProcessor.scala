@@ -8,8 +8,9 @@ import java.net.Socket
 import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.util.Try
+import SocketProcessor.*
 
-class SocketProcessor(connection: Connection)(using pathToHandlerMapping: mutable.Map[String, Class[_]]) extends Runnable :
+class SocketProcessor(connection: Connection)(using pathHandlerMapping: mutable.Map[String, Class[_]]) extends Runnable :
 
   final override def run(): Unit =
 
@@ -17,8 +18,8 @@ class SocketProcessor(connection: Connection)(using pathToHandlerMapping: mutabl
     val (requestMethod, path) = (extractParam(reader), extractParam(reader))
     val (httpRequest, httpResponseWriter) = (HttpRequest(reader, requestMethod, connection), HttpResponseWriter(writer, connection))
 
-    val requestHandler = pathToHandlerMapping.get(path)
-      .fold(pathToHandlerMapping("resourceNotFound"))(identity)
+    val requestHandler = pathHandlerMapping.get(path)
+      .fold(pathHandlerMapping(NOT_FOUND))(identity)
       .getConstructor(classOf[HttpRequest], classOf[HttpResponseWriter])
       .newInstance(httpRequest, httpResponseWriter).asInstanceOf[HttpRequestHandler]
 
@@ -34,3 +35,7 @@ class SocketProcessor(connection: Connection)(using pathToHandlerMapping: mutabl
 
     go("")
 
+
+object SocketProcessor:
+
+  lazy val NOT_FOUND: String = "resourceNotFound"
