@@ -1,4 +1,4 @@
-import handler.{AboutHandler, RootHandler, ScalaHandler}
+import handler.{AboutHandler, NewResourceHandler, OldResourceHandler, RootHandler, ScalaHandler}
 import http.AbstractHttpServer
 import sun.net.httpserver.HttpServerImpl
 import util.Util.*
@@ -24,3 +24,5 @@ class HttpServer(port: Int, host: String) extends AbstractHttpServer(port, host)
     ++("/" ~~> classOf[RootHandler])
     ++("/scala" ~~> classOf[ScalaHandler])
     ++("/about" ~~> classOf[AboutHandler])
+    ++("/oldLocation" ~~> classOf[OldResourceHandler])
+    ++("/newLocation" ~~> classOf[NewResourceHandler])
