@@ -2,24 +2,26 @@ package util
 
 import scala.annotation.targetName
 import scala.util.Try
+import DefaultParams.*
 
 object Util:
 
-  extension (str: String)
+  extension (param: String)
 
-    def toOption: Option[Int] = Try(str.toInt).toOption
+    final def toOption: Option[Int] = Try(param.toInt).toOption
 
     @targetName("register path ~~> path handler as a tuple")
-    def ~~>(handler: Class[_]): (String, Class[_]) = (str, handler)
+    final def ~~>(handler: Class[_]): (String, Class[_]) = (param, handler)
 
   extension (args: Array[String])
-    def getOrEmpty(index: Int): String = if args.length == 0 || index < 0 || index >= args.length then "" else args(index)
-    def extractHost: String = extractParam(args(0))(DefaultParams.DEFAULT_HOST)
-    def extractPort: Int = extractParam(args(1).toInt)(DefaultParams.DEFAULT_PORT)
+
+    final def getOrEmpty(index: Int): String = if args.length == 0 || index < 0 || index >= args.length then "" else args(index)
+    final def extractHost: String = extractParam(args(0))(DEFAULT_HOST)
+    final def extractPort: Int = extractParam(args(1).toInt)(DEFAULT_PORT)
 
     private def extractParam[A](param: => A)(default: A): A = Try(param).toOption.fold(default)(identity)
 
-  def log(str: String): Unit = println(str)
+  final def log(str: String): Unit = println(str)
 
 object DefaultParams:
 

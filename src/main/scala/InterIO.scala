@@ -14,8 +14,8 @@ object InterIO:
 
   def main(args: Array[String]): Unit =
     val (host, port) = (args.extractHost, args.extractPort)
-    val server = HttpServer(port, host)
-    server.serve()
+    val httpServer = HttpServer(port, host)
+    httpServer.serve()
 
 
 class HttpServer(port: Int, host: String) extends AbstractHttpServer(port, host) :

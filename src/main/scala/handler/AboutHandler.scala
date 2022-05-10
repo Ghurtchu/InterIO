@@ -2,8 +2,8 @@ package handler
 
 import request.{HttpRequest, HttpRequestHandler, HttpResponseWriter, RequestHandler, HttpResponse}
 import util.Util.log
-import header.StatusCode.*
-import header.ContentType.*
+import entity.StatusCode.*
+import entity.ContentType.*
 
 class AboutHandler(val httpRequest: HttpRequest, val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
 

@@ -1,10 +1,10 @@
 package handler
 
+import entity.StatusCode
 import request.{HttpRequest, HttpRequestHandler, HttpResponseWriter, RequestHandler, HttpResponse}
 import util.Util.log
-import header.StatusCode
-import header.StatusCode.*
-import header.ContentType.*
+import StatusCode.*
+import entity.ContentType.*
 
 import java.nio.charset.Charset
 

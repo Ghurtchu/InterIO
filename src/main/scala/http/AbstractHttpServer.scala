@@ -16,8 +16,8 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.jdk.StreamConverters.*
 import scala.util.{Try, Using}
-import header.StatusCode.*
-import header.ContentType.*
+import entity.StatusCode.*
+import entity.ContentType.*
 
 abstract class AbstractHttpServer(val port: Int, val host: String):
 

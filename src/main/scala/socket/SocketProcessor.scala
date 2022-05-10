@@ -10,7 +10,7 @@ import scala.util.Try
 
 class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String, Class[_]]) extends Runnable :
 
-  override def run(): Unit =
+  final override def run(): Unit =
 
     val writer = BufferedOutputStream(connection.out)
     val httpResponse = HttpResponseWriter(writer, connection)

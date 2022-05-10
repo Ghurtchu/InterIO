@@ -1,7 +1,7 @@
 package request
 
+import entity.StatusCode
 import request.{HttpRequest, HttpResponseWriter}
-import header.StatusCode
 import util.Util.log
 
 import java.net.Socket

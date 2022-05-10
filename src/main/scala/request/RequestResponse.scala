@@ -1,7 +1,7 @@
 package request
 
+import entity.{ContentType, StatusCode}
 import socket.Connection
-import header.{ContentType, StatusCode}
 
 import java.io.{BufferedInputStream, BufferedOutputStream}
 import java.net.Socket
@@ -15,7 +15,7 @@ case class HttpRequest(in: BufferedInputStream, requestMethod: String, override 
 
 case class HttpResponseWriter(out: BufferedOutputStream, override val connection: Connection) extends Http(connection) :
 
-  def write(response: Array[Byte]): Unit = out.write(response)
+  final def write(response: Array[Byte]): Unit = out.write(response)
 
 case class HttpResponse(data: String, contentType: ContentType, statusCode: StatusCode):
 
@@ -28,7 +28,7 @@ case class HttpResponse(data: String, contentType: ContentType, statusCode: Stat
       + data).getBytes(Charset.forName("US-ASCII")) 
     
 object HttpResponse:
-    
+
   def apply(data: String, contentType: ContentType, statusCode: StatusCode): Array[Byte] = new HttpResponse(data, contentType, statusCode).response
     
     

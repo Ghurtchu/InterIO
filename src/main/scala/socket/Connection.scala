@@ -4,8 +4,9 @@ import java.io.{InputStream, OutputStream}
 import java.net.Socket
 
 class Connection(socket: Socket):
-  def close(): Unit = socket.close()
 
-  def in: InputStream = socket.getInputStream
+  final def close(): Unit = socket.close()
 
-  def out: OutputStream = socket.getOutputStream
+  final def in: InputStream = socket.getInputStream
+
+  final def out: OutputStream = socket.getOutputStream
