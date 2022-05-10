@@ -10,5 +10,5 @@ class NewResourceHandler(val httpRequest: HttpRequest, val httpResponse: HttpRes
 
   override def handle(): Unit =
     val data: String = """<h1> New Location </h1>"""
-    val header = buildHeader(data)("text/html")(OK)
-    httpResponse.write(data)(header)
+    val response = buildResponse(data)("text/html")(OK)
+    httpResponse.write(response)

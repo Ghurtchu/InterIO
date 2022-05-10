@@ -26,11 +26,12 @@ abstract class HttpRequestHandler protected(val request: HttpRequest, val respon
 
   def handle(): Unit
 
-  protected def buildHeader(data: String)(contentType: String)(statusCode: StatusCode): Array[Byte] =
+  protected def buildResponse(data: String)(contentType: String)(statusCode: StatusCode): Array[Byte] =
     val dataAsBytes = data.getBytes(Charset.forName("US-ASCII"))
     (s"HTTP/1.1 ${statusCode.code} ${statusCode.value}\r\n"
       + s"Server: InterIO v1.0\r\n"
       + "Content-length: " + dataAsBytes.length + "\r\n"
-      + "Content-type: " + contentType + "; charset=" + "UTF-8" + "\r\n\r\n").getBytes(Charset.forName("US-ASCII"))
+      + "Content-type: " + contentType + "; charset=" + "UTF-8" + "\r\n\r\n"
+      + data).getBytes(Charset.forName("US-ASCII"))
 
-  protected def buildHeader(data: Map[String, Matchable])(contentType: String)(statusCode: StatusCode): Array[Byte] = buildHeader(data.toString())(contentType)(statusCode)
+  protected def buildHeader(data: Map[String, Matchable])(contentType: String)(statusCode: StatusCode): Array[Byte] = buildResponse(data.toString())(contentType)(statusCode)

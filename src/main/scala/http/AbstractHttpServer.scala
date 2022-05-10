@@ -39,8 +39,8 @@ class ResourceNotFoundHandler(val httpRequest: HttpRequest, val httpResponse: Ht
 
   final override def handle(): Unit =
     val data: String = """<h1> Page not found </h1>"""
-    val header = buildHeader(data)("text/html")(NotFound)
-    httpResponse.write(data)(header)
+    val response = buildResponse(data)("text/html")(NotFound)
+    httpResponse.write(response)
 
 
 

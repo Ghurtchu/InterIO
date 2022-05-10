@@ -14,8 +14,4 @@ case class HttpRequest(in: BufferedInputStream, requestMethod: String, override 
 
 case class HttpResponse(out: BufferedOutputStream, override val connection: Connection) extends HttpOperation(connection) :
 
-  def write(data: Array[Byte])(header: Array[Byte]): Unit =
-    out.write(header)
-    out.write(data)
-
-  def write(data: String)(header: Array[Byte]): Unit = write(data.getBytes(Charset.forName("US-ASCII")))(header)
+  def write(response: Array[Byte]): Unit = out.write(response)

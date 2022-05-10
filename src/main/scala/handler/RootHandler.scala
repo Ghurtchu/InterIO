@@ -8,5 +8,5 @@ class RootHandler(val httpRequest: HttpRequest, val httpResponse: HttpResponse) 
 
   override def handle(): Unit =
     val data: String = """<h1> Home page </h1>"""
-    val header = buildHeader(data)("text/html")(OK)
-    httpResponse.write(data)(header)
+    val response = buildResponse(data)("text/html")(OK)
+    httpResponse.write(response)

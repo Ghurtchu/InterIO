@@ -19,15 +19,15 @@ class AboutHandler(val httpRequest: HttpRequest, val httpResponse: HttpResponse)
             |<p> paragraph1 </p>
             |<p> paragraph2 </p>
             |""".stripMargin
-        val header = buildHeader(data)("text/html")(OK)
-        httpResponse.write(data)(header)
+        val response = buildResponse(data)("text/html")(OK)
+        httpResponse.write(response)
 
       case "POST" =>
 
         val data = """{"path": "/about", "method": "POST", "response": "Scala rocks!"}"""
 
-        val header = buildHeader(data)("application/json")(OK)
-        httpResponse.write(data)(header)
+        val response = buildResponse(data)("application/json")(OK)
+        httpResponse.write(response)
 
       case "PUT" => println("unimplemented")
 

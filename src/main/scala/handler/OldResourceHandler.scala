@@ -17,5 +17,5 @@ class OldResourceHandler(val httpRequest: HttpRequest, val httpResponse: HttpRes
         |  <p>Please follow <a href="$newLocation">this link</a>.</p>
         |</body>
         |""".stripMargin
-    val header = buildHeader(data)("text/html")(PermanentRedirect)
-    httpResponse.write(data)(header)
+    val response = buildResponse(data)("text/html")(PermanentRedirect)
+    httpResponse.write(response)

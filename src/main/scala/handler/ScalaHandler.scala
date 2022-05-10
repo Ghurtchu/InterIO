@@ -8,5 +8,5 @@ class ScalaHandler(val httpRequest: HttpRequest, val httpResponse: HttpResponse)
 
   override def handle(): Unit =
     val data = """{"lang": "Scala", "hasBipolarDisorder": true}"""
-    val header = buildHeader(data)("application/json")(OK)
-    httpResponse.write(data)(header)
+    val response = buildResponse(data)("application/json")(OK)
+    httpResponse.write(response)
