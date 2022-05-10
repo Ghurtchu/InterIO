@@ -4,30 +4,33 @@ import request.{HttpRequest, HttpRequestHandler, HttpResponseWriter, RequestHand
 import util.Util.log
 import entity.StatusCode.*
 import entity.ContentType.*
+import entity.Body.*
 
-class AboutHandler(val httpRequest: HttpRequest, val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
+
+class AboutHandler(val httpRequest: HttpRequest, override val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
 
   override def handle(): Unit =
 
     val httpMethod = httpRequest.requestMethod
 
     httpMethod match
-      
+
       case "GET" =>
-        
-        val data =
+
+        val body = html(
           """
-            |<h1> About page GET request </h1>
-            |<p> paragraph1 </p>
-            |<p> paragraph2 </p>
-            |""".stripMargin
-        val response = HttpResponse(data, HTML, OK)  
+            |<h1> InterIO 1.0 </h1>
+            |<p> A simple multithreaded http server </p>
+            |""".stripMargin)
+
+        val response = HttpResponse(body)
+        
         writer.write(response)
 
       case "POST" =>
-      
-        val data = """{"path": "/about", "method": "POST", "response": "Scala rocks!"}"""
-        val response = HttpResponse(data, JSON, OK)
+
+        val body = json("""{"path": "/about", "method": "POST", "response": "Scala rocks!"}""")
+        val response = HttpResponse(body)
         writer.write(response)
 
       case "PUT" => println("unimplemented")

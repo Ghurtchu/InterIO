@@ -11,15 +11,15 @@ import scala.util.Using
 trait RequestHandler:
   def handleRequest(): Unit
 
-abstract class HttpRequestHandler protected(val request: HttpRequest, val response: HttpResponseWriter) extends RequestHandler :
+abstract class HttpRequestHandler protected(val request: HttpRequest, val writer: HttpResponseWriter) extends RequestHandler :
 
-  lazy val requestHandler: String = getClass.getSimpleName
-  log(s"$requestHandler received HTTP request")
+  def requestHandler: String = getClass.getSimpleName
 
   final override def handleRequest(): Unit =
+    log(s"$requestHandler received HTTP request")
     handle()
-    response.out.flush()
-    request.connection.kill()
+    writer.out.flush()
+    request.connection.close()
     log(s"$requestHandler sent back HTTP response")
 
   def handle(): Unit

@@ -9,7 +9,7 @@ import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.util.Try
 
-class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String, Class[_]]) extends Runnable :
+class SocketProcessor(connection: Connection)(using pathToHandlerMapping: mutable.Map[String, Class[_]]) extends Runnable :
 
   final override def run(): Unit =
 
@@ -17,10 +17,10 @@ class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String,
     val (requestMethod, path) = (extractParam(reader), extractParam(reader))
     val (httpRequest, httpResponseWriter) = (HttpRequest(reader, requestMethod, connection), HttpResponseWriter(writer, connection))
 
-    val requestHandler = mapping.get(path)
-      .fold(mapping("resourceNotFound"))(identity)
+    val requestHandler = pathToHandlerMapping.get(path)
+      .fold(pathToHandlerMapping("resourceNotFound"))(identity)
       .getConstructor(classOf[HttpRequest], classOf[HttpResponseWriter])
-      .newInstance(httpRequest, httpResponseWriter).asInstanceOf[RequestHandler]
+      .newInstance(httpRequest, httpResponseWriter).asInstanceOf[HttpRequestHandler]
 
     requestHandler.handleRequest()
 
@@ -28,9 +28,9 @@ class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String,
 
     @tailrec
     def go(acc: String): String =
-      val char = in.read()
+      val char = in.read().asInstanceOf[Char]
       if char == ' ' then acc
-      else go(acc concat char.asInstanceOf[Char].toString)
+      else go(acc concat char.toString)
 
     go("")
 

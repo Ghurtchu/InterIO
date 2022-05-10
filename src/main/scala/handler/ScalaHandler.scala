@@ -4,10 +4,12 @@ import request.{HttpRequest, HttpRequestHandler, HttpResponseWriter, HttpRespons
 import util.Util.log
 import entity.StatusCode.*
 import entity.ContentType.*
+import entity.Body.*
 
-class ScalaHandler(val httpRequest: HttpRequest, val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
+
+class ScalaHandler(val httpRequest: HttpRequest, override val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
 
   override def handle(): Unit =
-    val data: String = """{"lang": "Scala", "hasBipolarDisorder": true}"""
-    val response = HttpResponse(data, JSON, OK)
+    val body = json("""{"lang": "Scala", "hasBipolarDisorder": true}""")
+    val response = HttpResponse(body)
     writer.write(response)

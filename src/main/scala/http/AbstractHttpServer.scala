@@ -23,21 +23,21 @@ abstract class AbstractHttpServer(val port: Int, val host: String):
 
   log("<~~ server started ~~>")
 
-  given mapping: mutable.Map[String, Class[_]] = mutable.Map("resourceNotFound" -> classOf[ResourceNotFoundHandler])
+  given pathToHandlerMapping: mutable.Map[String, Class[_]] = mutable.Map("resourceNotFound" -> classOf[ResourceNotFoundHandler])
 
-  private final val pool = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors())
+  private final val threadPool = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors())
 
   final def serve(): Unit =
     registerPaths()
-    Using(ServerSocket(port))(serverSocket => while true do pool.submit(SocketProcessor(Connection(serverSocket.accept))))
+    Using(ServerSocket(port))(serverSocket => while true do threadPool.submit(SocketProcessor(Connection(serverSocket.accept))))
 
   @targetName("Register path and the handler class for the path")
-  final def ++(pathHandlerPair: (String, Class[_])): Unit = mapping += (pathHandlerPair._1 -> pathHandlerPair._2)
+  final def ++(pathHandlerPair: (String, Class[_])): Unit = pathToHandlerMapping += (pathHandlerPair._1 -> pathHandlerPair._2)
 
   def registerPaths(): Unit
 
-class ResourceNotFoundHandler(val httpRequest: HttpRequest, val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
-  
+class ResourceNotFoundHandler(val httpRequest: HttpRequest, override val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
+
   final override def handle(): Unit =
     val data: String = """<h1> Page not found </h1>"""
     val response = HttpResponse(data, HTML, NotFound)

@@ -1,7 +1,10 @@
 package request
 
-import entity.{ContentType, StatusCode}
+import entity.StatusCode.*
+import entity.ContentType.*
+import entity.{Body, ContentType, StatusCode}
 import socket.Connection
+import entity.Body.*
 
 import java.io.{BufferedInputStream, BufferedOutputStream}
 import java.net.Socket
@@ -25,10 +28,12 @@ case class HttpResponse(data: String, contentType: ContentType, statusCode: Stat
       + s"Server: InterIO v1.0\r\n"
       + "Content-length: " + dataAsBytes.length + "\r\n"
       + "Content-type: " + contentType.get + "; charset=" + "UTF-8" + "\r\n\r\n"
-      + data).getBytes(Charset.forName("US-ASCII")) 
-    
+      + data).getBytes(Charset.forName("US-ASCII"))
+
 object HttpResponse:
 
-  def apply(data: String, contentType: ContentType, statusCode: StatusCode): Array[Byte] = new HttpResponse(data, contentType, statusCode).response
-    
-    
+  def apply(data: String, contentType: ContentType, statusCode: StatusCode = OK): Array[Byte] = new HttpResponse(data, contentType, statusCode).response
+
+  def apply(body: Body): Array[Byte] = HttpResponse(body.get, body.contentType)
+
+  def apply(body: Body, statusCode: StatusCode): Array[Byte] = HttpResponse(body.get, body.contentType, statusCode)
