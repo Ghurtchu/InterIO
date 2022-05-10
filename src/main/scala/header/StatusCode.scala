@@ -1,4 +1,4 @@
-package statuscode
+package header
 
 enum StatusCode(val value: String, val code: Int):
 

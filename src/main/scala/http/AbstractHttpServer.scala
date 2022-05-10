@@ -1,6 +1,6 @@
 package http
 
-import request.{HttpRequest, HttpRequestHandler, HttpResponse}
+import request.{HttpRequest, HttpRequestHandler, HttpResponseWriter, HttpResponse}
 import socket.*
 import util.Util.log
 
@@ -16,7 +16,8 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.jdk.StreamConverters.*
 import scala.util.{Try, Using}
-import statuscode.StatusCode.*
+import header.StatusCode.*
+import header.ContentType.*
 
 abstract class AbstractHttpServer(val port: Int, val host: String):
 
@@ -35,12 +36,12 @@ abstract class AbstractHttpServer(val port: Int, val host: String):
 
   def registerPaths(): Unit
 
-class ResourceNotFoundHandler(val httpRequest: HttpRequest, val httpResponse: HttpResponse) extends HttpRequestHandler(httpRequest, httpResponse) :
-
+class ResourceNotFoundHandler(val httpRequest: HttpRequest, val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
+  
   final override def handle(): Unit =
     val data: String = """<h1> Page not found </h1>"""
-    val response = buildResponse(data)("text/html")(NotFound)
-    httpResponse.write(response)
+    val response = HttpResponse(data, HTML, NotFound)
+    writer.write(response)
 
 
 

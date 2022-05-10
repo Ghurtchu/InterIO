@@ -1,12 +1,13 @@
 package handler
 
-import request.{HttpRequest, HttpRequestHandler, HttpResponse}
+import request.{HttpRequest, HttpRequestHandler, HttpResponseWriter, HttpResponse}
 import util.Util.log
-import statuscode.StatusCode.*
+import header.StatusCode.*
+import header.ContentType.*
 
-class ScalaHandler(val httpRequest: HttpRequest, val httpResponse: HttpResponse) extends HttpRequestHandler(httpRequest, httpResponse) :
+class ScalaHandler(val httpRequest: HttpRequest, val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
 
   override def handle(): Unit =
-    val data = """{"lang": "Scala", "hasBipolarDisorder": true}"""
-    val response = buildResponse(data)("application/json")(OK)
-    httpResponse.write(response)
+    val data: String = """{"lang": "Scala", "hasBipolarDisorder": true}"""
+    val response = HttpResponse(data, JSON, OK)
+    writer.write(response)

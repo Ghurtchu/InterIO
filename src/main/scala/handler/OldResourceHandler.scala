@@ -1,10 +1,11 @@
 package handler
 
-import request.{HttpRequest, HttpRequestHandler, HttpResponse, RequestHandler}
+import request.{HttpRequest, HttpRequestHandler, HttpResponseWriter, RequestHandler, HttpResponse}
 import util.Util.log
-import statuscode.StatusCode.*
+import header.StatusCode.*
+import header.ContentType.*
 
-class OldResourceHandler(val httpRequest: HttpRequest, val httpResponse: HttpResponse) extends HttpRequestHandler(httpRequest, httpResponse) :
+class OldResourceHandler(val httpRequest: HttpRequest, val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
 
   val newLocation: String = "http://localhost:8080/newLocation"
 
@@ -17,5 +18,5 @@ class OldResourceHandler(val httpRequest: HttpRequest, val httpResponse: HttpRes
         |  <p>Please follow <a href="$newLocation">this link</a>.</p>
         |</body>
         |""".stripMargin
-    val response = buildResponse(data)("text/html")(PermanentRedirect)
-    httpResponse.write(response)
+    val response = HttpResponse(data, HTML, PermanentRedirect)
+    writer.write(response)

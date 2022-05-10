@@ -1,6 +1,6 @@
 package socket
 
-import request.{HttpRequest, HttpRequestHandler, HttpResponse, RequestHandler}
+import request.{HttpRequest, HttpRequestHandler, HttpResponseWriter, RequestHandler}
 import util.Util.log
 
 import java.io.{BufferedInputStream, BufferedOutputStream, InputStream, OutputStream}
@@ -8,19 +8,12 @@ import java.net.Socket
 import scala.collection.mutable
 import scala.util.Try
 
-class Connection(socket: Socket):
-  def close(): Unit = socket.close()
-
-  def in: InputStream = socket.getInputStream
-
-  def out: OutputStream = socket.getOutputStream
-
 class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String, Class[_]]) extends Runnable :
 
   override def run(): Unit =
 
     val writer = BufferedOutputStream(connection.out)
-    val httpResponse = HttpResponse(writer, connection)
+    val httpResponse = HttpResponseWriter(writer, connection)
 
     val reader = BufferedInputStream(connection.in)
 
@@ -42,7 +35,7 @@ class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String,
 
     val handler = mapping.get(path.toString)
       .fold(mapping("resourceNotFound"))(identity)
-      .getConstructor(classOf[HttpRequest], classOf[HttpResponse])
+      .getConstructor(classOf[HttpRequest], classOf[HttpResponseWriter])
       .newInstance(httpRequest, httpResponse).asInstanceOf[RequestHandler]
 
     handler.handleRequest()
