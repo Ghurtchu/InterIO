@@ -3,6 +3,7 @@ package util
 import scala.annotation.targetName
 import scala.util.Try
 import DefaultParams.*
+import request.HttpRequestHandler
 
 object Util:
 
@@ -11,7 +12,7 @@ object Util:
     final def toOption: Option[Int] = Try(param.toInt).toOption
 
     @targetName("register path ~~> path handler as a tuple")
-    final def ~~>(handler: Class[_]): (String, Class[_]) = (param, handler)
+    final def ~~>[A <: HttpRequestHandler](handler: Class[A]): (String, Class[A]) = (param, handler)
 
   extension (args: Array[String])
 

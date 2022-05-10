@@ -10,15 +10,18 @@ import java.io.{BufferedInputStream, BufferedOutputStream}
 import java.net.Socket
 import java.nio.charset.Charset
 
-sealed trait Http(val connection: Connection)
+sealed trait Http(protected val connection: Connection):
+  def close(): Unit = connection.close()
 
-case class HttpRequest(in: BufferedInputStream, requestMethod: String, override val connection: Connection) extends Http(connection) :
+case class HttpRequest(in: BufferedInputStream, requestMethod: String, override protected val connection: Connection) extends Http(connection) :
 
   def read(): Unit = println("unimplemented")
 
-case class HttpResponseWriter(out: BufferedOutputStream, override val connection: Connection) extends Http(connection) :
+case class HttpResponseWriter(protected val out: BufferedOutputStream, override protected val connection: Connection) extends Http(connection) :
 
   final def write(response: Array[Byte]): Unit = out.write(response)
+  
+  final def flush(): Unit = out.flush()
 
 case class HttpResponse(data: String, contentType: ContentType, statusCode: StatusCode):
 

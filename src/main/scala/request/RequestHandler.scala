@@ -18,8 +18,8 @@ abstract class HttpRequestHandler protected(val request: HttpRequest, val writer
   final override def handleRequest(): Unit =
     log(s"$requestHandler received HTTP request")
     handle()
-    writer.out.flush()
-    request.connection.close()
+    writer.flush()
+    request.close()
     log(s"$requestHandler sent back HTTP response")
 
   def handle(): Unit
