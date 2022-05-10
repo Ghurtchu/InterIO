@@ -8,7 +8,7 @@ import java.nio.charset.Charset
 
 sealed trait HttpOperation(val connection: Connection)
 
-case class HttpRequest(in: BufferedInputStream, override val connection: Connection) extends HttpOperation(connection) :
+case class HttpRequest(in: BufferedInputStream, requestMethod: String, override val connection: Connection) extends HttpOperation(connection) :
 
   def read(): Unit = println("unimplemented")
 

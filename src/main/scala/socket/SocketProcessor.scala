@@ -10,10 +10,12 @@ import scala.util.Try
 
 class Connection(socket: Socket):
   def close(): Unit = socket.close()
+
   def in: InputStream = socket.getInputStream
+
   def out: OutputStream = socket.getOutputStream
 
-class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String, Class[_]]) extends Runnable:
+class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String, Class[_]]) extends Runnable :
 
   override def run(): Unit =
 
@@ -21,7 +23,6 @@ class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String,
     val httpResponse = HttpResponse(writer, connection)
 
     val reader = BufferedInputStream(connection.in)
-    val httpRequest = HttpRequest(reader, connection)
 
     val requestMethod = mutable.StringBuilder()
     var reqMethodChar = reader.read
@@ -29,6 +30,8 @@ class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String,
     while reqMethodChar != ' ' do
       requestMethod.append(reqMethodChar.asInstanceOf[Char])
       reqMethodChar = reader.read
+
+    val httpRequest = HttpRequest(reader, requestMethod.toString, connection)
 
     val path = mutable.StringBuilder()
     var pathChar = reader.read()

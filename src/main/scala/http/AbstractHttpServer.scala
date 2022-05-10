@@ -1,8 +1,8 @@
 package http
 
 import request.{HttpRequest, HttpRequestHandler, HttpResponse}
-import util.Util.log
 import socket.*
+import util.Util.log
 
 import java.io.*
 import java.net.{ServerSocket, Socket}
@@ -16,6 +16,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.jdk.StreamConverters.*
 import scala.util.{Try, Using}
+import statuscode.StatusCode.*
 
 abstract class AbstractHttpServer(val port: Int, val host: String):
 
@@ -38,7 +39,7 @@ class ResourceNotFoundHandler(val httpRequest: HttpRequest, val httpResponse: Ht
 
   final override def handle(): Unit =
     val data: String = """<h1> Page not found </h1>"""
-    val header = buildHeader(data)("text/html")(404)
+    val header = buildHeader(data)("text/html")(NotFound)
     httpResponse.write(data)(header)
 
 

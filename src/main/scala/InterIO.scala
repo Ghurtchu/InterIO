@@ -1,14 +1,13 @@
-import handler.{AboutHandler, ScalaHandler, RootHandler}
+import handler.{AboutHandler, RootHandler, ScalaHandler}
 import http.AbstractHttpServer
-import util.Util.*
 import sun.net.httpserver.HttpServerImpl
+import util.Util.*
 
 import java.io
 import java.io.*
 import java.net.{InetSocketAddress, Socket}
 import java.nio.charset.Charset
 import java.time.LocalDate
-import scala.collection.mutable
 import scala.util.{Try, Using}
 
 object InterIO:

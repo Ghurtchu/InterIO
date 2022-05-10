@@ -1,6 +1,7 @@
 package request
 
 import request.{HttpRequest, HttpResponse}
+import statuscode.StatusCode
 import util.Util.log
 
 import java.net.Socket
@@ -25,11 +26,11 @@ abstract class HttpRequestHandler protected(val request: HttpRequest, val respon
 
   def handle(): Unit
 
-  protected def buildHeader(data: String)(contentType: String)(statusCode: Int): Array[Byte] =
+  protected def buildHeader(data: String)(contentType: String)(statusCode: StatusCode): Array[Byte] =
     val dataAsBytes = data.getBytes(Charset.forName("US-ASCII"))
-    (s"HTTP/1.1 $statusCode OK\r\n"
+    (s"HTTP/1.1 ${statusCode.code} ${statusCode.value}\r\n"
       + s"Server: InterIO v1.0\r\n"
       + "Content-length: " + dataAsBytes.length + "\r\n"
       + "Content-type: " + contentType + "; charset=" + "UTF-8" + "\r\n\r\n").getBytes(Charset.forName("US-ASCII"))
 
-  protected def buildHeader(data: Map[String, Matchable])(contentType: String)(statusCode: Int): Array[Byte] = buildHeader(data.toString())(contentType)(statusCode)
+  protected def buildHeader(data: Map[String, Matchable])(contentType: String)(statusCode: StatusCode): Array[Byte] = buildHeader(data.toString())(contentType)(statusCode)
