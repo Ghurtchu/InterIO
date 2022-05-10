@@ -19,7 +19,7 @@ abstract class HttpRequestHandler protected(val request: HttpRequest, val respon
   final override def handleRequest(): Unit =
     handle()
     response.out.flush()
-    request.connection.close()
+    request.connection.kill()
     log(s"$requestHandler sent back HTTP response")
 
   def handle(): Unit

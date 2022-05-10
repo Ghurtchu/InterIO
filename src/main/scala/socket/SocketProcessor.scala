@@ -5,6 +5,7 @@ import util.Util.log
 
 import java.io.{BufferedInputStream, BufferedOutputStream, InputStream, OutputStream}
 import java.net.Socket
+import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.util.Try
 
@@ -12,30 +13,30 @@ class SocketProcessor(connection: Connection)(using mapping: mutable.Map[String,
 
   final override def run(): Unit =
 
-    val writer = BufferedOutputStream(connection.out)
+    val writer = BufferedOutputStream(connection.output)
+    val reader = BufferedInputStream(connection.input)
+
+    val requestMethod = extractParam(reader)
+
+    val httpRequest = HttpRequest(reader, requestMethod, connection)
     val httpResponse = HttpResponseWriter(writer, connection)
 
-    val reader = BufferedInputStream(connection.in)
+    val path = extractParam(reader)
 
-    val requestMethod = mutable.StringBuilder()
-    var reqMethodChar = reader.read
-
-    while reqMethodChar != ' ' do
-      requestMethod.append(reqMethodChar.asInstanceOf[Char])
-      reqMethodChar = reader.read
-
-    val httpRequest = HttpRequest(reader, requestMethod.toString, connection)
-
-    val path = mutable.StringBuilder()
-    var pathChar = reader.read()
-
-    while pathChar != ' ' do
-      path.append(pathChar.asInstanceOf[Char])
-      pathChar = reader.read()
-
-    val handler = mapping.get(path.toString)
+    val handler = mapping.get(path)
       .fold(mapping("resourceNotFound"))(identity)
       .getConstructor(classOf[HttpRequest], classOf[HttpResponseWriter])
       .newInstance(httpRequest, httpResponse).asInstanceOf[RequestHandler]
 
     handler.handleRequest()
+
+  private def extractParam(in: InputStream): String =
+
+    @tailrec
+    def go(acc: String): String =
+      val char = in.read()
+      if char == ' ' then acc
+      else go(acc concat char.asInstanceOf[Char].toString)
+
+    go("")
+
