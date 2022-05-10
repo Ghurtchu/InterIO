@@ -1,14 +1,13 @@
 package socket
 
 import request.{HttpRequest, HttpRequestHandler, HttpResponseWriter, RequestHandler}
-import util.Util.log
+import socket.SocketProcessor.*
+import util.Util.*
 
 import java.io.{BufferedInputStream, BufferedOutputStream, InputStream, OutputStream}
 import java.net.Socket
 import scala.annotation.tailrec
 import scala.collection.mutable
-import scala.util.Try
-import SocketProcessor.*
 
 class SocketProcessor(connection: Connection)(using pathHandlerMapping: mutable.Map[String, Class[_]]) extends Runnable :
 

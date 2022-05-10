@@ -1,10 +1,10 @@
 package request
 
-import entity.StatusCode.*
+import entity.Body.*
 import entity.ContentType.*
+import entity.StatusCode.*
 import entity.{Body, ContentType, StatusCode}
 import socket.Connection
-import entity.Body.*
 
 import java.io.{BufferedInputStream, BufferedOutputStream}
 import java.net.Socket

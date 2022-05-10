@@ -1,14 +1,7 @@
 import handler.{AboutHandler, RootHandler, ScalaHandler}
 import http.AbstractHttpServer
-import sun.net.httpserver.HttpServerImpl
 import util.Util.*
 
-import java.io
-import java.io.*
-import java.net.{InetSocketAddress, Socket}
-import java.nio.charset.Charset
-import java.time.LocalDate
-import scala.util.{Try, Using}
 
 object InterIO:
 

@@ -1,9 +1,10 @@
 package util
 
+import request.HttpRequestHandler
+import util.DefaultParams.*
+
 import scala.annotation.targetName
 import scala.util.Try
-import DefaultParams.*
-import request.HttpRequestHandler
 
 object Util:
 

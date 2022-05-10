@@ -1,10 +1,10 @@
 package handler
 
-import request.{HttpRequest, HttpRequestHandler, HttpResponseWriter, HttpResponse}
-import util.Util.log
-import entity.StatusCode.*
-import entity.ContentType.*
 import entity.Body.*
+import entity.ContentType.*
+import entity.StatusCode.*
+import request.{HttpRequest, HttpRequestHandler, HttpResponse, HttpResponseWriter}
+import util.Util.log
 
 class RootHandler(val httpRequest: HttpRequest, override val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
 

@@ -1,6 +1,6 @@
 package entity
 
-import ContentType.*
+import entity.ContentType.*
 
 enum Body(val get: String, val contentType: ContentType):
 

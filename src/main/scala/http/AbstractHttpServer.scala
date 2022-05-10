@@ -1,7 +1,11 @@
 package http
 
-import request.{HttpRequest, HttpRequestHandler, HttpResponseWriter, HttpResponse}
+import entity.Body.*
+import entity.ContentType.*
+import entity.StatusCode.*
+import request.{HttpRequest, HttpRequestHandler, HttpResponse, HttpResponseWriter}
 import socket.*
+import socket.SocketProcessor.NOT_FOUND
 import util.Util.log
 
 import java.io.*
@@ -16,10 +20,6 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.jdk.StreamConverters.*
 import scala.util.{Try, Using}
-import entity.StatusCode.*
-import entity.ContentType.*
-import entity.Body.*
-import SocketProcessor.NOT_FOUND
 
 
 abstract class AbstractHttpServer(val port: Int, val host: String):
