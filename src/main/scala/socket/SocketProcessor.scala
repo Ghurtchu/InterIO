@@ -14,8 +14,23 @@ class SocketProcessor(connection: Connection)(using pathHandlerMapping: mutable.
   final override def run(): Unit =
 
     val (writer, reader) = (BufferedOutputStream(connection.output), BufferedInputStream(connection.input))
-    val (requestMethod, path) = (extractParam(reader), extractParam(reader))
-    val (httpRequest, httpResponseWriter) = (HttpRequest(reader, requestMethod, connection), HttpResponseWriter(writer, connection))
+    val (requestMethod, path) = (extractParam(reader, " "), extractParam(reader, " ", "?"))
+
+    val queryParamsAsString = extractParam(reader, " ")
+    val queryParams = if !queryParamsAsString.startsWith("HTTP")  then {
+      val queryParamsSplitted = queryParamsAsString.split("&")
+      val queryParamsAsMap = queryParamsSplitted.map { arr =>
+        val keyValuePair = arr.split("=")
+        keyValuePair(0) -> keyValuePair(1)
+      }.toMap
+
+      queryParamsAsMap
+    } else Map()
+
+    println()
+    println()
+
+    val (httpRequest, httpResponseWriter) = (HttpRequest(reader, requestMethod, connection, queryParams), HttpResponseWriter(writer, connection))
 
     val requestHandler = pathHandlerMapping.get(path)
       .fold(pathHandlerMapping(NOT_FOUND))(identity)
@@ -24,13 +39,13 @@ class SocketProcessor(connection: Connection)(using pathHandlerMapping: mutable.
 
     requestHandler.handleRequest()
 
-  private def extractParam(in: InputStream): String =
+  private def extractParam(in: InputStream, stopStrings: String*): String =
 
     @tailrec
     def go(acc: String): String =
-      val char = in.read().asInstanceOf[Char]
-      if char == ' ' then acc
-      else go(acc concat char.toString)
+      val char = in.read().asInstanceOf[Char].toString
+      if stopStrings.contains(char) then acc
+      else go(acc concat char)
 
     go("")
 

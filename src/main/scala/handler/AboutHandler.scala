@@ -8,7 +8,7 @@ import util.Util.log
 
 
 class AboutHandler(val httpRequest: HttpRequest, override val writer: HttpResponseWriter) extends HttpRequestHandler(httpRequest, writer) :
-  
+
   override def handle(): Unit =
 
     val httpMethod = httpRequest.requestMethod

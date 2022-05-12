@@ -13,7 +13,7 @@ import java.nio.charset.Charset
 sealed trait Http(protected val connection: Connection):
   def close(): Unit = connection.close()
 
-case class HttpRequest(in: BufferedInputStream, requestMethod: String, override protected val connection: Connection) extends Http(connection) :
+case class HttpRequest(in: BufferedInputStream, requestMethod: String, override protected val connection: Connection, queryParams: Map[String, String]) extends Http(connection) :
 
   def read(): Unit = println("unimplemented")
 

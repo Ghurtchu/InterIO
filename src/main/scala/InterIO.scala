@@ -1,4 +1,4 @@
-import handler.{AboutHandler, RootHandler, ScalaHandler}
+import handler.{AboutHandler, ProductHandler, RootHandler, ScalaHandler}
 import http.AbstractHttpServer
 import util.Util.*
 
@@ -17,3 +17,4 @@ class HttpServer(port: Int, host: String) extends AbstractHttpServer(port, host)
     ++("/" ~~> classOf[RootHandler])
     ++("/scala" ~~> classOf[ScalaHandler])
     ++("/about" ~~> classOf[AboutHandler])
+    ++("/product" ~~> classOf[ProductHandler])
