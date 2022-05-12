@@ -17,18 +17,15 @@ class SocketProcessor(connection: Connection)(using pathHandlerMapping: mutable.
     val (requestMethod, path) = (extractParam(reader, " "), extractParam(reader, " ", "?"))
 
     val queryParamsAsString = extractParam(reader, " ")
-    val queryParams = if !queryParamsAsString.startsWith("HTTP")  then {
-      val queryParamsSplitted = queryParamsAsString.split("&")
-      val queryParamsAsMap = queryParamsSplitted.map { arr =>
-        val keyValuePair = arr.split("=")
-        keyValuePair(0) -> keyValuePair(1)
-      }.toMap
 
-      queryParamsAsMap
-    } else Map()
-
-    println()
-    println()
+    val queryParams =
+      if !queryParamsAsString.startsWith("HTTP") then
+        val queryParamsSplitted = queryParamsAsString.split("&")
+        queryParamsSplitted.map { arr =>
+          val keyValuePair = arr.split("=")
+          keyValuePair(0) -> keyValuePair(1)
+        }.toMap
+      else Map()
 
     val (httpRequest, httpResponseWriter) = (HttpRequest(reader, requestMethod, connection, queryParams), HttpResponseWriter(writer, connection))
 
