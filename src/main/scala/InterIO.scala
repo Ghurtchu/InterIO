@@ -1,4 +1,4 @@
-import handler.{AboutHandler, ProductHandler, RootHandler, ScalaHandler}
+import handler.{AboutHandler, ProductHandler, RootHandler}
 import http.AbstractHttpServer
 import util.Util.*
 
@@ -15,6 +15,5 @@ class HttpServer(port: Int, host: String) extends AbstractHttpServer(port, host)
 
   final override def registerPaths(): Unit =
     ++("/" ~~> classOf[RootHandler])
-    ++("/scala" ~~> classOf[ScalaHandler])
     ++("/about" ~~> classOf[AboutHandler])
     ++("/product" ~~> classOf[ProductHandler])

@@ -16,20 +16,13 @@ class AboutHandler(val httpRequest: HttpRequest, override val writer: HttpRespon
     httpMethod match
 
       case "GET" =>
-
-        val body = html(
-          """
-            |<h1> InterIO 1.0 </h1>
-            |<p> A simple multithreaded http server </p>
-            |""".stripMargin)
-
+        val body = html("<h1> InterIO 1.0 </h1>") + html("<p> A simple multithreaded http server </p>")
         val response = HttpResponse(body)
-        
         writer.write(response)
 
       case "POST" =>
-
-        val body = json("""{"path": "/about", "method": "POST", "response": "Scala rocks!"}""")
+        val body = json("""{"path": "/about", "method": "POST"}""")
+          + json("""{"response": "Scala rocks!"}""")
         val response = HttpResponse(body)
         writer.write(response)
 
